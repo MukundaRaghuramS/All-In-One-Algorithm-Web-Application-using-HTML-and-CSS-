@@ -1,0 +1,187 @@
+<html>
+<head>
+    <meta name="viewport" content="with=device-width,initial-scale=1.0 ">
+<title>All In One Algorithm</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css">
+</head>
+<body>
+<section class="headr">
+        <na>
+            <a href="index.html"><img src="15.png"      ></a>
+            <div class="nav-links" id="navLinks">
+            <i class="fa fa-times" onclick="hideMenu()"></i>
+             <ul>
+                 <li><a href="index.html">HOME</a></li>
+                 <li><a href="ALGORITHMS.html">ALGORITHMS</a></li>
+                 <li><a href="">CONTACT</a></li>
+                </ul>
+            </div>
+        <i class="fa fa-bars" onclick="showMenu()"></i>
+        </na>
+    </section>
+<section class="nsalo">
+    <h1> Rabin-Karp Sring Matching</h1>
+    <div class="nsa-clo">
+    <h2>Code</h2>
+    
+        <p>def rabin(text, pattern, prime, modulo):<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n = len(text)<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m = len(pattern)<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pattern_hash = calculate(pattern, prime, modulo)<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text_hash = calculate(text[:m], prime, modulo)<br>
+
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for i in range(n - m + 1):<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if pattern_hash == text_hash:<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if text[i:i + m] == pattern:<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f"pattern found at index: {i}")<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if i < n - m:<br>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text_hash = update_hash(text_hash, text[i], text[i + m], prime, modulo, m)<br>
+
+
+def calculate(s, prime, modulo):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hash_value = 0<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for char in s:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hash_value = (hash_value * prime + ord(char)) % modulo<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return hash_value<br>
+
+
+def update_hash(old_hash, exiting_char, entering_char, prime, modulo, pattern_length):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;update_hash = (old_hash - ord(exiting_char) * pow(prime, pattern_length - 1, modulo)) % modulo<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;update_hash = (update_hash * prime + ord(entering_char)) % modulo<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return update_hash<br>
+
+
+text = input("Enter the Text:")<br>
+pattern = input("Enter the Pattern:")<br>
+prime = 100<br>
+modulo = 31<br>
+rabin(text, pattern, prime, modulo)<br>
+
+        </p>
+    </div>
+   <!----------RunIng Code------------>
+   <div class="nas">
+    <form onsubmit="return false">
+        <label for="text">Text:</label><br>
+        <input type="text" id="text" name="text" ><br>
+        <label for="pattern">Pattern:</label><br>
+        <input type="text" id="pattern" name="pattern" ><br>
+        <input type="submit" id="btn-form" value="Submit" onclick="submitForm()">
+    </form>
+
+    <p>Output:</p>
+    <p id='output'></p>
+
+    <script>
+        function submitForm() {
+            var text = document.getElementById("text").value;
+            var pattern = document.getElementById("pattern").value;
+            var output = document.getElementById("output");
+            
+            function naiveStringMatching(text, pattern) {
+                var n = text.length;
+                var m = pattern.length;
+                var matches = [];
+
+                for (var i = 0; i <= n - m; i++) {
+                    var j = 0;
+                    while (j < m && text.charAt(i + j) == pattern.charAt(j)) {
+                        j++;
+                    }
+
+                    if (j == m) {
+                        matches.push(i);
+                    }
+                }
+
+                if (matches.length > 0) {
+                    output.textContent = "Pattern found at indices: " + matches.join(', ');
+                } else {
+                    output.textContent = "Pattern not found.";
+                }
+            }
+
+            naiveStringMatching(text, pattern);
+        }
+    </script>
+    </p>
+    
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="exp">
+        <h2>EXPLANTION</h2>
+        <p>
+        <mark>The Rabin-Karp string matching algorithm is a popular algorithm used to find the occurrence of a pattern (substring) within a text (string). It uses hashing to quickly compare substrings of the text with the pattern, making it efficient for certain situations. Here's an explanation of how the Rabin-Karp algorithm works with an example:<br>
+
+<mark>Algorithm Overview:<br></mark>
+
+<mark>Preprocessing:</mark> Calculate a hash value (hash code) for the pattern and for each window of the same length in the text.<br>
+
+Matching: Compare the hash value of the pattern with the hash values of the windows in the text. If the hash values match, we perform a character-by-character comparison to confirm the match.<br>
+
+Rolling Hash: As we slide the window along the text, we update the hash value efficiently using a rolling hash function to avoid recalculating it from scratch.<br>
+
+Example:<br>
+
+Let's say we want to find the pattern "ABC" within the text "XABCDABCY".<br>
+
+Step 1 (Preprocessing):<br>
+Calculate the hash value for the pattern "ABC" and for the first window of the same length in the text "XAB."<br>
+
+Pattern Hash Value: hash("ABC") = SomeValue<br>
+Text Window Hash Value: hash("XAB") = SomeOtherValue<br>
+
+Step 2 (Matching):<br>
+Compare the hash values. If they match, we perform a character-by-character comparison to confirm the match.<br>
+
+The hash values don't match initially, so we move the window one character to the right:<br>
+
+Text Window Hash Value: hash("ABC") = SomeNewValue<br>
+Now, the hash values match, so we perform a character-by-character comparison:<br>
+
+"ABC" (pattern) == "ABC" (text window)<br>
+The pattern is found at the current position in the text.<br>
+Step 3 (Rolling Hash):<br>
+We continue to slide the window to the right, updating the hash value using a rolling hash function. This involves subtracting the contribution of the leftmost character and adding the contribution of the rightmost character in the window.<br>
+
+Move the window one character to the right:<br>
+
+Text Window Hash Value: hash("BCD") = SomeUpdatedValue<br>
+Continue sliding and checking for matches until we've searched the entire text.<br>
+
+This algorithm is efficient because it allows us to compare substrings without explicitly comparing each character in the pattern with the text, which can be time-consuming for long texts. Instead, we use hash codes to quickly identify potential matches and only perform character comparisons when the hash values match.<br>
+
+However, the Rabin-Karp algorithm can have performance issues if not implemented carefully, especially if there are many false positives (hash collisions). To address this, additional techniques like using prime number modulo and rolling hash functions are applied to minimize collisions and optimize the algorithm's efficiency.<br></mark>
+            
+        </p>
+        
+    </div>
+    
+    </section>
+
+<!-------JaveScript-------> 
+<script>
+    var navLinks=document.getElementById("navLinks");
+    function showMenu(){
+        navLinks.style.right="0";
+    }
+    function hideMenu(){
+        navLinks.style.right="-200";
+    }
+</script>   
+</body>
+</html>
+    

@@ -1,0 +1,175 @@
+<html>
+<head>
+    <meta name="viewport" content="with=device-width,initial-scale=1.0 ">
+<title>All In One Algorithm</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css">
+</head>
+<body>
+<section class="headr">
+        <na>
+            <a href="index.html"><img src="15.png"      ></a>
+            <div class="nav-links" id="navLinks">
+            <i class="fa fa-times" onclick="hideMenu()"></i>
+             <ul>
+                 <li><a href="index.html">HOME</a></li>
+                 <li><a href="ALGORITHMS.html">ALGORITHMS</a></li>
+                 <li><a href="">CONTACT</a></li>
+                </ul>
+            </div>
+        <i class="fa fa-bars" onclick="showMenu()"></i>
+        </na>
+    </section>
+<section class="nsalo">
+    <h2>Quick Sort</h2>
+    <div class="nsa-clo">
+    <h2 >Code</h2>
+    <pre class="new">
+def partition(array, low, high):
+    pivot = array[high]
+    i = low - 1
+    for j in range(low, high):
+        if array[j] <= pivot:
+            i = i + 1
+            (array[i], array[j]) = (array[j], array[i])
+
+    (array[i + 1], array[high]) = (array[high], array[i + 1])
+
+    return i + 1
+
+def quicksort(array, low, high):
+    if low < high:
+        pi = partition(array, low, high)
+
+        quicksort(array, low, pi - 1)
+        quicksort(array, pi + 1, high)
+
+if __name__ == '__main':
+    array = list()
+    N = eval(input("Enter the Value of Array:"))
+    N = len(array)
+    for i in range(N):
+        n = eval(input("Enter the Value"))
+        array.append(n)
+
+    quicksort(array, 0, N - 1)
+    print('Sorted array:')
+    for x in array:
+        print(x, end=" ")
+
+
+
+    </pre>
+
+
+
+
+
+
+    </div>
+   <!----------RunIng Code------------>
+   <div class="nas">
+    <p>Enter numbers into the array, separating them with commas (e.g., 1, 6,3,7,0):</p>
+    <form id="arrayForm">
+        <input type="text" id="numberInput">
+        <button type="button" id="sortArray">Sort Array</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        // JavaScript code for handling user input and array
+        var myArray = [];
+        var resultDiv = document.getElementById("result");
+
+        function sortArray() {
+            var numberInput = document.getElementById("numberInput");
+            resultDiv.innerHTML = ''; // Clear previous output
+            myArray = []; // Clear the array
+
+            // Get the user input as a string
+            var inputValues = numberInput.value;
+
+            // Split the string into an array using a comma as the delimiter
+            var inputArray = inputValues.split(",");
+
+            // Convert input values to numbers and add them to the array
+            for (var i = 0; i < inputArray.length; i++) {
+                var inputValue = parseFloat(inputArray[i]);
+                if (!isNaN(inputValue)) {
+                    myArray.push(inputValue);
+                }
+            }
+
+            // Sort the array using QuickSort
+            quickSort(myArray, 0, myArray.length - 1);
+
+            // Display the sorted array
+            resultDiv.innerHTML = "Sorted array: " + myArray.join(", ");
+
+            // Clear the input field
+            numberInput.value = '';
+        }
+
+        // Function to sort the array using QuickSort
+        function quickSort(array, low, high) {
+            if (low < high) {
+                var pi = partition(array, low, high);
+                quickSort(array, low, pi - 1);
+                quickSort(array, pi + 1, high);
+            }
+        }
+
+        function partition(array, low, high) {
+            var pivot = array[high];
+            var i = low - 1;
+
+            for (var j = low; j < high; j++) {
+                if (array[j] <= pivot) {
+                    i = i + 1;
+                    var temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                }
+            }
+
+            var temp = array[i + 1];
+            array[i + 1] = array[high];
+            array[high] = temp;
+
+            return i + 1;
+        }
+
+        // Add an event listener to sort the array when the "Sort Array" button is clicked
+        document.getElementById("sortArray").addEventListener("click", function () {
+            sortArray();
+        });
+    </script>
+
+
+   </div>
+
+
+    <div class="exp">
+        <h2>EXPLANTION</h2>
+        <p> picks an element as pivot, and then it partitions the given array around the picked pivot element. In quick sort, a large array is divided into two arrays in which one holds values <br>
+that are smaller than the specified value (Pivot), and another array holds the values that are greater than the pivot.<br>
+        </p>
+           
+        
+    </div>
+    
+    </section>
+
+<!-------JaveScript-------> 
+<script>
+    var navLinks=document.getElementById("navLinks");
+    function showMenu(){
+        navLinks.style.right="0";
+    }
+    function hideMenu(){
+        navLinks.style.right="-200";
+    }
+</script>   
+</body>
+</html>
+    
