@@ -81,7 +81,35 @@ if __name__ == '__main__':
 </pre>
        
     
-    
+<style>
+    /* Sorting Container */
+    .sorting-container {
+        margin-top: 50px;
+    }
+
+    /* Graph Container (Fixed Size) */
+    .bar-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        height: 400px;  /* Fixed max height */
+        margin-top: 20px;
+        border: 2px solid #ddd;
+        padding: 10px;
+        overflow: hidden; /* Prevent overflow */
+    }
+
+    /* Bars (Dynamic Height) */
+    .bar {
+        width: 30px; /* Fixed width */
+        margin: 3px;
+        background-color: steelblue;
+        text-align: center;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+    }
+</style>
 
 
    
@@ -93,81 +121,95 @@ if __name__ == '__main__':
 
     </div>
    <!----------RunIng Code------------>
-   <div class="nas">
-    <p>Enter numbers into the array, separating them with commas (e.g., 1, 6,3,7,0):</p>
-    <form id="arrayForm">
-        <input type="text" id="numberInput">
-        <button type="button" id="sortArray">Sort Array</button>
-    </form>
-    <div id="result"></div>
+   <div class="sorting-container">
+    <p>Enter numbers separated by commas (e.g., 10, 5, 7, 3, 9):</p>
+    <input type="text" id="numberInput">
+    <button onclick="startSorting()">Sort Array</button>
+
+    <div class="bar-container" id="barContainer"></div>
+</div>
 
     <script>
-        // JavaScript code for handling user input and array
-        var myArray = [];
-        var resultDiv = document.getElementById("result");
+        let delay = 500;  // Delay in milliseconds
 
-        function sortArray() {
-            var numberInput = document.getElementById("numberInput");
-            resultDiv.innerHTML = ''; // Clear previous output
-            myArray = []; // Clear the array
+        function startSorting() {
+            let input = document.getElementById("numberInput").value;
+            let array = input.split(",").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
 
-            // Get the user input as a string
-            var inputValues = numberInput.value;
+            if (array.length === 0) {
+                alert("Please enter valid numbers!");
+                return;
+            }
 
-            // Split the string into an array using a comma as the delimiter
-            var inputArray = inputValues.split(",");
+            displayBars(array);
+            mergeSort(array, 0, array.length - 1);
+        }
 
-            // Convert input values to numbers and add them to the array
-            for (var i = 0; i < inputArray.length; i++) {
-                var inputValue = parseFloat(inputArray[i]);
-                if (!isNaN(inputValue)) {
-                    myArray.push(inputValue);
+        function displayBars(array) {
+            let container = document.getElementById("barContainer");
+            container.innerHTML = "";
+
+            let maxHeight = 400; // Fixed container height
+            let maxNumber = Math.max(...array) || 1; // Avoid division by zero
+
+            array.forEach(value => {
+                let bar = document.createElement("div");
+                bar.classList.add("bar");
+
+                // Dynamically adjust height within limits
+                let heightRatio = (value / maxNumber) * maxHeight;
+                bar.style.height = `${heightRatio}px`;
+
+                bar.textContent = value;
+                container.appendChild(bar);
+            });
+        }
+
+        async function mergeSort(arr, left, right) {
+            if (left < right) {
+                let mid = Math.floor((left + right) / 2);
+
+                await mergeSort(arr, left, mid);
+                await mergeSort(arr, mid + 1, right);
+                await merge(arr, left, mid, right);
+            }
+        }
+
+        async function merge(arr, left, mid, right) {
+            let leftArr = arr.slice(left, mid + 1);
+            let rightArr = arr.slice(mid + 1, right + 1);
+
+            let i = 0, j = 0, k = left;
+
+            while (i < leftArr.length && j < rightArr.length) {
+                if (leftArr[i] <= rightArr[j]) {
+                    arr[k] = leftArr[i];
+                    i++;
+                } else {
+                    arr[k] = rightArr[j];
+                    j++;
                 }
+                k++;
+                displayBars(arr);
+                await new Promise(resolve => setTimeout(resolve, delay));
             }
 
-            // Sort the array using QuickSort
-            quickSort(myArray, 0, myArray.length - 1);
-
-            // Display the sorted array
-            resultDiv.innerHTML = "Sorted array: " + myArray.join(", ");
-
-            // Clear the input field
-            numberInput.value = '';
-        }
-
-        // Function to sort the array using QuickSort
-        function quickSort(array, low, high) {
-            if (low < high) {
-                var pi = partition(array, low, high);
-                quickSort(array, low, pi - 1);
-                quickSort(array, pi + 1, high);
-            }
-        }
-
-        function partition(array, low, high) {
-            var pivot = array[high];
-            var i = low - 1;
-
-            for (var j = low; j < high; j++) {
-                if (array[j] <= pivot) {
-                    i = i + 1;
-                    var temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                }
+            while (i < leftArr.length) {
+                arr[k] = leftArr[i];
+                i++;
+                k++;
+                displayBars(arr);
+                await new Promise(resolve => setTimeout(resolve, delay));
             }
 
-            var temp = array[i + 1];
-            array[i + 1] = array[high];
-            array[high] = temp;
-
-            return i + 1;
+            while (j < rightArr.length) {
+                arr[k] = rightArr[j];
+                j++;
+                k++;
+                displayBars(arr);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
         }
-
-        // Add an event listener to sort the array when the "Sort Array" button is clicked
-        document.getElementById("sortArray").addEventListener("click", function () {
-            sortArray();
-        });
     </script>
 
 

@@ -62,98 +62,169 @@ if __name__ == '__main':
     </pre>
 
 
-
-
+    
+    
 
 
     </div>
+    
    <!----------RunIng Code------------>
-   <div class="nas">
-    <p>Enter numbers into the array, separating them with commas (e.g., 1, 6,3,7,0):</p>
-    <form id="arrayForm">
-        <input type="text" id="numberInput">
-        <button type="button" id="sortArray">Sort Array</button>
-    </form>
-    <div id="result"></div>
+   <style>
 
-    <script>
-        // JavaScript code for handling user input and array
-        var myArray = [];
-        var resultDiv = document.getElementById("result");
+    /* Sorting Section */
+    /* Sorting Section */
+.sorting-container {
+    margin-top: 200px;
+}
 
-        function sortArray() {
-            var numberInput = document.getElementById("numberInput");
-            resultDiv.innerHTML = ''; // Clear previous output
-            myArray = []; // Clear the array
+/* Graph Container (Fixed Size) */
+.bar-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 500px;  /* Fixed max height */
+    margin-top: 20px;
+    border: 10px solid #ddd;
+    padding: 20px;
+    overflow: hidden; /* Prevent overflow */
+}
 
-            // Get the user input as a string
-            var inputValues = numberInput.value;
+/* Bars (Dynamic Height) */
+.bar {
+    width: 50px; /* Fixed width */
+    margin: 5px;
+    background-color: steelblue;
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
 
-            // Split the string into an array using a comma as the delimiter
-            var inputArray = inputValues.split(",");
 
-            // Convert input values to numbers and add them to the array
-            for (var i = 0; i < inputArray.length; i++) {
-                var inputValue = parseFloat(inputArray[i]);
-                if (!isNaN(inputValue)) {
-                    myArray.push(inputValue);
-                }
-            }
+  
 
-            // Sort the array using QuickSort
-            quickSort(myArray, 0, myArray.length - 1);
+</style>
 
-            // Display the sorted array
-            resultDiv.innerHTML = "Sorted array: " + myArray.join(", ");
+<!-- Sorting Visualization Section -->
+<div class="sorting-container">
+    <p>Enter numbers separated by commas (e.g., 10, 5, 7, 3, 9):</p>
+    <input type="text" id="numberInput">
+    <button onclick="startSorting()">Sort Array</button>
+    <div class="bar-container" id="barContainer"></div>
+</div>
 
-            // Clear the input field
-            numberInput.value = '';
+
+<!-- JavaScript for Sorting -->
+<script>
+    let delay = 500;  // Delay in milliseconds
+
+    function startSorting() {
+        let input = document.getElementById("numberInput").value;
+        let array = input.split(",").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+
+        if (array.length === 0) {
+            alert("Please enter valid numbers!");
+            return;
         }
 
-        // Function to sort the array using QuickSort
-        function quickSort(array, low, high) {
-            if (low < high) {
-                var pi = partition(array, low, high);
-                quickSort(array, low, pi - 1);
-                quickSort(array, pi + 1, high);
+        displayBars(array);
+        quickSort(array, 0, array.length - 1);
+    }
+
+    function displayBars(array) {
+    let container = document.getElementById("barContainer");
+    container.innerHTML = "";
+
+    let maxHeight = 500; // Max height of the container
+    let maxNumber = Math.max(...array); // Get the highest number
+
+    array.forEach(value => {
+        let bar = document.createElement("div");
+        bar.classList.add("bar");
+
+        // Dynamically adjust height within limits
+        let heightRatio = (value / maxNumber) * maxHeight;
+        bar.style.height = `${heightRatio}px`;
+
+        bar.textContent = value;
+        container.appendChild(bar);
+    });
+}
+
+
+    async function quickSort(array, low, high) {
+        if (low < high) {
+            let pi = await partition(array, low, high);
+            await quickSort(array, low, pi - 1);
+            await quickSort(array, pi + 1, high);
+        }
+    }
+
+    async function partition(array, low, high) {
+        let pivot = array[high];
+        let i = low - 1;
+
+        for (let j = low; j < high; j++) {
+            if (array[j] <= pivot) {
+                i++;
+                [array[i], array[j]] = [array[j], array[i]];
+                displayBars(array);
+                await new Promise(resolve => setTimeout(resolve, delay));
             }
         }
 
-        function partition(array, low, high) {
-            var pivot = array[high];
-            var i = low - 1;
+        [array[i + 1], array[high]] = [array[high], array[i + 1]];
+        displayBars(array);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return i + 1;
+    }
+</script>
 
-            for (var j = low; j < high; j++) {
-                if (array[j] <= pivot) {
-                    i = i + 1;
-                    var temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                }
-            }
+<!-- JavaScript for Navigation Menu -->
+<script>
+    var navLinks = document.getElementById("navLinks");
+    
+    function showMenu() {
+        navLinks.style.right = "0";
+    }
 
-            var temp = array[i + 1];
-            array[i + 1] = array[high];
-            array[high] = temp;
+    function hideMenu() {
+        navLinks.style.right = "-200px";
+    }
+</script>
 
-            return i + 1;
-        }
-
-        // Add an event listener to sort the array when the "Sort Array" button is clicked
-        document.getElementById("sortArray").addEventListener("click", function () {
-            sortArray();
-        });
-    </script>
 
 
    </div>
 
-
+   
     <div class="exp">
         <h2>EXPLANTION</h2>
-        <p> picks an element as pivot, and then it partitions the given array around the picked pivot element. In quick sort, a large array is divided into two arrays in which one holds values <br>
-that are smaller than the specified value (Pivot), and another array holds the values that are greater than the pivot.<br>
-        </p>
+
+<h3> Quick Sort Algorithm </h3>
+
+- The code defines two functions: `partition` and `quicksort` to implement the Quick Sort algorithm.<br>
+- Quick Sort is a divide-and-conquer algorithm that works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays according to whether they are less than or greater than the pivot.<br>
+- The `partition` function takes an array, a low index, and a high index as input parameters.<br>
+- It selects the last element of the array as the pivot.<br>
+- It then iterates through the array from the low index to the high index (excluding the pivot).<br>
+- If an element is less than or equal to the pivot, it increments the `i` variable and swaps the element at index `i` with the element at index `j`.<br>
+- Finally, it places the pivot element in its correct position by swapping it with the element at index `i + 1`.<br>
+- The function returns the index of the pivot element after partitioning.<br>
+
+<h3>Quicksort Function</h3>
+
+- The `quicksort` function takes an array, a low index, and a high index as input parameters.<br>
+- It recursively sorts the sub-arrays before and after the pivot element.<br>
+- If the low index is less than the high index, it calls the `partition` function to get the index of the pivot element.<br>
+- It then recursively calls `quicksort` on the sub-array to the left of the pivot (elements less than the pivot) and the sub-array to the right of the pivot (elements greater than the pivot).<br>
+
+<h3>Main Function</h3> 
+
+- The main function reads input from the user to create an array.<br>
+- It then calls the `quicksort` function to sort the array in ascending order.<br>
+- Finally, it prints the sorted array.<br>
+
            
         
     </div>
@@ -169,7 +240,72 @@ that are smaller than the specified value (Pivot), and another array holds the v
     function hideMenu(){
         navLinks.style.right="-200";
     }
-</script>   
+</script>  
+<div class="quiz-container">
+    <h3>For Quiz</h3>
+    <ul>
+        <li><a href="quiz1.html"><button>Quiz</button></a></li>
+    </ul>
+</div>   
 </body>
 </html>
     
+
+
+
+<!-- <body>
+    <h2>Quick Sort Visualizer</h2>
+    <p>Enter numbers separated by commas (e.g., 5,3,8,1,7):</p>
+    <input type="text" id="numberInput">
+    <button onclick="startSorting()">Sort</button>
+    <div class="bar-container" id="barContainer"></div>
+
+    <script>
+        let delay = 500;
+
+        function startSorting() {
+            let input = document.getElementById("numberInput").value;
+            let array = input.split(",").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+            displayBars(array);
+            quickSort(array, 0, array.length - 1);
+        }
+
+        function displayBars(array) {
+            let container = document.getElementById("barContainer");
+            container.innerHTML = "";
+            array.forEach(value => {
+                let bar = document.createElement("div");
+                bar.classList.add("bar");
+                bar.style.height = `${value * 5}px`;
+                bar.textContent = value;
+                container.appendChild(bar);
+            });
+        }
+
+        async function quickSort(array, low, high) {
+            if (low < high) {
+                let pi = await partition(array, low, high);
+                await quickSort(array, low, pi - 1);
+                await quickSort(array, pi + 1, high);
+            }
+        }
+
+        async function partition(array, low, high) {
+            let pivot = array[high];
+            let i = low - 1;
+
+            for (let j = low; j < high; j++) {
+                if (array[j] <= pivot) {
+                    i++;
+                    [array[i], array[j]] = [array[j], array[i]];
+                    displayBars(array);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+
+            [array[i + 1], array[high]] = [array[high], array[i + 1]];
+            displayBars(array);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return i + 1;
+        }
+    </script> -->

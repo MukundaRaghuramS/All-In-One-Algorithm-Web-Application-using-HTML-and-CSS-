@@ -38,49 +38,89 @@
 
       </p>  
     </div>
-   <!----------RunIng Code------------>
-   <div class="nas">
-    <form onsubmit="return false">
-        <label for="text">Text:</label><br>
-        <input type="text" id="text" name="text" ><br>
-        <label for="pattern">Pattern:</label><br>
-        <input type="text" id="pattern" name="pattern" ><br>
-        <input type="submit" id="btn-form" value="Submit" onclick="submitForm()">
-    </form>
 
-    <p>Output:</p>
-    <p id='output'></p>
+    <style>
+        input {
+            width: 300px;
+            padding: 5px;
+            margin: 5px;
+        }
+        button {
+            padding: 8px 15px;
+            background: steelblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .result-container {
+            margin-top: 20px;
+            font-size: 20px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+        }
+        .highlight {
+            background: yellow;
+            color: black;
+            font-weight: bold;
+            padding: 2px;
+            border-radius: 4px;
+        }
+    </style>
+   <!----------RunIng Code------------>
+   <h2>Naïve String Matching Visualization</h2>
+
+    <p>Enter the main text:</p>
+    <input type="text" id="textInput" placeholder="Enter the main text here">
+
+    <p>Enter the pattern to search:</p>
+    <input type="text" id="patternInput" placeholder="Enter the pattern">
+
+    <br><br>
+    <button onclick="startMatching()">Find Matches</button>
+
+    <div class="result-container" id="resultContainer"></div>
 
     <script>
-        function submitForm() {
-            var text = document.getElementById("text").value;
-            var pattern = document.getElementById("pattern").value;
-            var output = document.getElementById("output");
-            
-            function naiveStringMatching(text, pattern) {
-                var n = text.length;
-                var m = pattern.length;
-                var matches = [];
+        async function startMatching() {
+            let text = document.getElementById("textInput").value;
+            let pattern = document.getElementById("patternInput").value;
 
-                for (var i = 0; i <= n - m; i++) {
-                    var j = 0;
-                    while (j < m && text.charAt(i + j) == pattern.charAt(j)) {
-                        j++;
-                    }
+            if (!text || !pattern) {
+                alert("Please enter both text and pattern!");
+                return;
+            }
 
-                    if (j == m) {
-                        matches.push(i);
+            let resultContainer = document.getElementById("resultContainer");
+            resultContainer.innerHTML = ""; 
+
+            let highlightedText = "";
+            let n = text.length;
+            let m = pattern.length;
+
+            for (let i = 0; i <= n - m; i++) {
+                let match = true;
+
+                // Step-by-step matching
+                for (let j = 0; j < m; j++) {
+                    if (text[i + j] !== pattern[j]) {
+                        match = false;
+                        break;
                     }
                 }
 
-                if (matches.length > 0) {
-                    output.textContent = "Pattern found at indices: " + matches.join(', ');
-                } else {
-                    output.textContent = "Pattern not found.";
+                if (match) {
+                    highlightedText += text.substring(0, i) + `<span class="highlight">${text.substring(i, i + m)}</span>` + text.substring(i + m);
+                    resultContainer.innerHTML = highlightedText;
+                    await new Promise(resolve => setTimeout(resolve, 800)); // Animation delay
+                    highlightedText = "";
                 }
             }
 
-            naiveStringMatching(text, pattern);
+            if (resultContainer.innerHTML === "") {
+                resultContainer.innerHTML = "No matches found!";
+            }
         }
     </script>
     </p>

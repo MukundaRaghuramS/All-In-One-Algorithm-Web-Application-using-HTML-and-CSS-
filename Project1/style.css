@@ -207,7 +207,7 @@ h1{
 
 .nsa-clo{
     flex-basis: 31%;
-    background: #f8e5e5;
+    background: #abedb1;
     border-radius: 10px;
     margin-bottom: 5%;
     padding: 20px 12px;
@@ -416,6 +416,26 @@ font-size: 15;
 
 
 
+.quiz-container {
+    padding: 20px;
+}
+
+.question {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
 
 
 

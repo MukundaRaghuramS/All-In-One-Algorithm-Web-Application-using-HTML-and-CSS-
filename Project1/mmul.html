@@ -72,7 +72,36 @@ print(result)
 </pre>
 
 
-
+<style>
+    .matrix-container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 20px;
+    }
+    .matrix {
+        display: grid;
+        gap: 5px;
+        padding: 10px;
+        background: #f0f0f0;
+        border-radius: 10px;
+    }
+    .cell {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: steelblue;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        border-radius: 5px;
+    }
+    .result {
+        background: #ff9800;
+    }
+</style>
    
 
 
@@ -82,83 +111,75 @@ print(result)
 
     </div>
    <!----------RunIng Code------------>
-   <div class="nas">
-    <p>Enter numbers into the array, separating them with commas (e.g., 1, 6,3,7,0):</p>
-    <form id="arrayForm">
-        <input type="text" id="numberInput">
-        <button type="button" id="sortArray">Sort Array</button>
-    </form>
-    <div id="result"></div>
+   <p>Enter Matrix A (comma-separated rows, semicolon-separated columns):</p>
+    <input type="text" id="matrixA" placeholder="Example: 1,2;3,4">
+    
+    <p>Enter Matrix B (comma-separated rows, semicolon-separated columns):</p>
+    <input type="text" id="matrixB" placeholder="Example: 5,6;7,8">
+
+    <br><br>
+    <button onclick="multiplyMatrices()">Multiply Matrices</button>
+
+    <div class="matrix-container">
+        <div id="matrixAContainer"></div>
+        <div id="matrixBContainer"></div>
+        <div id="matrixResultContainer"></div>
+    </div>
 
     <script>
-        // JavaScript code for handling user input and array
-        var myArray = [];
-        var resultDiv = document.getElementById("result");
+        function parseMatrix(input) {
+            return input.split(";").map(row => row.split(",").map(num => parseInt(num.trim())));
+        }
 
-        function sortArray() {
-            var numberInput = document.getElementById("numberInput");
-            resultDiv.innerHTML = ''; // Clear previous output
-            myArray = []; // Clear the array
+        function displayMatrix(matrix, containerId, isResult = false) {
+            let container = document.getElementById(containerId);
+            container.innerHTML = "";
 
-            // Get the user input as a string
-            var inputValues = numberInput.value;
+            if (!matrix.length) return;
 
-            // Split the string into an array using a comma as the delimiter
-            var inputArray = inputValues.split(",");
+            let rows = matrix.length;
+            let cols = matrix[0].length;
+            container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            container.classList.add("matrix");
 
-            // Convert input values to numbers and add them to the array
-            for (var i = 0; i < inputArray.length; i++) {
-                var inputValue = parseFloat(inputArray[i]);
-                if (!isNaN(inputValue)) {
-                    myArray.push(inputValue);
+            matrix.forEach(row => {
+                row.forEach(value => {
+                    let cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    if (isResult) cell.classList.add("result");
+                    cell.textContent = value;
+                    container.appendChild(cell);
+                });
+            });
+        }
+
+        async function multiplyMatrices() {
+            let matrixA = parseMatrix(document.getElementById("matrixA").value);
+            let matrixB = parseMatrix(document.getElementById("matrixB").value);
+
+            if (matrixA[0].length !== matrixB.length) {
+                alert("Matrix multiplication is not possible! Columns of A must match rows of B.");
+                return;
+            }
+
+            displayMatrix(matrixA, "matrixAContainer");
+            displayMatrix(matrixB, "matrixBContainer");
+
+            let rowsA = matrixA.length, colsA = matrixA[0].length;
+            let rowsB = matrixB.length, colsB = matrixB[0].length;
+            let result = Array.from({ length: rowsA }, () => Array(colsB).fill(0));
+
+            for (let i = 0; i < rowsA; i++) {
+                for (let j = 0; j < colsB; j++) {
+                    for (let k = 0; k < colsA; k++) {
+                        result[i][j] += matrixA[i][k] * matrixB[k][j];
+                    }
+                    displayMatrix(result, "matrixResultContainer", true);
+                    await new Promise(resolve => setTimeout(resolve, 500)); // Animation delay
                 }
             }
-
-            // Sort the array using QuickSort
-            quickSort(myArray, 0, myArray.length - 1);
-
-            // Display the sorted array
-            resultDiv.innerHTML = "Sorted array: " + myArray.join(", ");
-
-            // Clear the input field
-            numberInput.value = '';
         }
-
-        // Function to sort the array using QuickSort
-        function quickSort(array, low, high) {
-            if (low < high) {
-                var pi = partition(array, low, high);
-                quickSort(array, low, pi - 1);
-                quickSort(array, pi + 1, high);
-            }
-        }
-
-        function partition(array, low, high) {
-            var pivot = array[high];
-            var i = low - 1;
-
-            for (var j = low; j < high; j++) {
-                if (array[j] <= pivot) {
-                    i = i + 1;
-                    var temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                }
-            }
-
-            var temp = array[i + 1];
-            array[i + 1] = array[high];
-            array[high] = temp;
-
-            return i + 1;
-        }
-
-        // Add an event listener to sort the array when the "Sort Array" button is clicked
-        document.getElementById("sortArray").addEventListener("click", function () {
-            sortArray();
-        });
     </script>
-
 
    </div>
 
