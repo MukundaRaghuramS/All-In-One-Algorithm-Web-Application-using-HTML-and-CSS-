@@ -60,8 +60,8 @@ Built-in Quizzes – Reinforce learning with hands-on testing
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/your-username/AlgorithmAtlas.git
-cd AlgorithmAtlas
+git clone https://github.com/your-username/AlgorithmAtlas-All-In-One-Algorithm-Web.git
+cd Project1
 2️⃣ Install Dependencies
 bash
 Copy code
